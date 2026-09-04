@@ -1,4 +1,4 @@
-# PDF 页面提取工具 v1.0.0 发布说明
+# PDF 页面提取工具 v1.0.1 发布说明
 
 **发布日期**：2026-09-04
 **首个正式版本** 🎉
@@ -14,7 +14,7 @@
 **SHA-256 校验值**：
 
 ```
-2F242B716D9F04F56A9D30241D32581179B34F84A84D54DCD4A75B6883E25B72
+7E21883ABC9BA003ABC07D87A8D2AEF60391CA3B7E55031DCE05D6BFD1C9E409
 ```
 
 > 校验方法（PowerShell）：`Get-FileHash PdfPageExtractor.exe -Algorithm SHA256`
@@ -69,10 +69,18 @@ PdfPageExtractor.exe --count input.pdf
 
 ---
 
+## 🔧 v1.0.1 兼容性修复
+
+- 修复现代生成器（Adobe Acrobat / iText / WPS 新版等）使用 xref 流 + 对象流（ObjStm）结构时「未能解析出任何页面」的问题
+- 支持文件头 `%PDF-` 前存在垃圾字节（BOM / 附加数据）的 PDF
+- 页面树损坏时自动回退扫描所有页面对象，提升兼容性
+
 ## ✅ 已验证场景
 
 - 多范围提取、单页提取、全页提取
 - FlateDecode 压缩流 PDF
+- xref 流 + 对象流（ObjStm）结构 PDF
+- 文件头带垃圾字节 / 嵌套页面树 + 继承属性
 - 提取后页面内容完整性校验
 - xlsx 模板写入 / 读取往返
 
