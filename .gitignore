@@ -1,0 +1,24 @@
+# 构建产物
+build/
+dist/
+*.exe
+*.o
+*.obj
+*.res
+
+# 测试临时文件
+tests/out_*.pdf
+tests/test_tpl.xlsx
+test_tpl.xlsx
+
+# IDE / 编辑器
+.vs/
+.vscode/
+.idea/
+*.user
+*.swp
+
+# 系统文件
+Thumbs.db
+Desktop.ini
+.DS_Store

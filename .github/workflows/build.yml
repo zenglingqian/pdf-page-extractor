@@ -1,0 +1,49 @@
+name: Build
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup MinGW-w64
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          install: mingw-w64-x86_64-gcc mingw-w64-x86_64-binutils
+          update: false
+
+      - name: Build
+        shell: msys2 {0}
+        run: |
+          windres --use-temp-file src/app.rc -O coff -o build/app.res.o || mkdir -p build && windres --use-temp-file src/app.rc -O coff -o build/app.res.o
+          mkdir -p build dist
+          windres --use-temp-file src/app.rc -O coff -o build/app.res.o
+          gcc -O2 -c -DNDEBUG src/third_party/miniz/miniz.c -o build/miniz.o
+          g++ -O2 -std=c++17 -static -static-libgcc -static-libstdc++ -municode \
+              -DUNICODE -D_UNICODE -DWIN32_LEAN_AND_MEAN -DNOMINMAX \
+              -Wall -Wextra -Wno-unused-parameter \
+              -Isrc -Isrc/third_party \
+              src/main.cpp src/pdfextract.cpp src/xlsx.cpp build/miniz.o build/app.res.o \
+              -o dist/PdfPageExtractor.exe \
+              -lcomctl32 -lcomdlg32 -lshell32 -lgdi32 -luser32 -lkernel32
+
+      - name: Test (CLI extract)
+        shell: msys2 {0}
+        run: |
+          python tests/make_test_pdf.py
+          ./dist/PdfPageExtractor.exe test_10pages.pdf out.pdf 3 5 9-10
+          ./dist/PdfPageExtractor.exe --count out.pdf
+          python tests/verify_extract.py
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: PdfPageExtractor
+          path: dist/PdfPageExtractor.exe
