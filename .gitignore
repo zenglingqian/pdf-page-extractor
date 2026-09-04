@@ -14,6 +14,9 @@ test_tpl.xlsx
 # 个人示例文件（不上传）
 tests/example/
 
+# example 文件夹中的大体积 PDF 不上传（GitHub 单文件 100MB 限制）
+example/*.pdf
+
 # IDE / 编辑器
 .vs/
 .vscode/
