@@ -11,6 +11,9 @@ tests/out_*.pdf
 tests/test_tpl.xlsx
 test_tpl.xlsx
 
+# 个人示例文件（不上传）
+tests/example/
+
 # IDE / 编辑器
 .vs/
 .vscode/
